@@ -1,0 +1,8 @@
+{
+    "test": {
+        "foo": "bar"
+    },
+    "prod": {
+        "foo": "baz"
+    }
+}

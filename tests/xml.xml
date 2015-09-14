@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<envy>
+    <test>
+        <foo>bar</foo>
+    </test>
+    <prod>
+        <foo>baz</foo>
+    </prod>
+</envy>
