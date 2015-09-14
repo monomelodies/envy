@@ -32,4 +32,138 @@ going to run into some real life problems:
     is evil, it would be nice to have a way to automatically decide which
     database(s) a set of tests needs to run against.
 
+## Installation
+
+### Composer (recommended)
+```bash
+$ composer require monomelodies/envy
+```
+
+### Manual
+1. Download or clone the repository;
+2. Add `/path/to/envy/src` for the namespace `Envy\\` to your autoloader.
+
+## Usage
+In a central place in your application (e.g. a bootstrapper that's always
+included) instantiate a "global" `Envy` object:
+
+```php
+<?php
+
+use Envy\Envy;
+
+$env = new Envy('/path/to/my/configurations', function () {
+    return 'production';
+});
+```
+
+The first parameter is the location of the configuration file that defines your
+environments and their differences. Envy supports the following formats out of
+the box:
+
+- JSON (`.json`)
+- YAML (`.yml`)
+- PHP .ini-style (`.ini`)
+- XML (`.xml`)
+- PHP array or simple object (`.php`)
+
+The top-level key is simply the name of the environment (define as many as you
+need), every second level are the settings. E.g., for JSON:
+
+```json
+{
+    "production": {
+        "root-path": "/var/www"
+    },
+    "development": {
+        "root-path": "/home/monomelodies/my-project"
+    }
+}
+```
+
+The second argument is a callable that should return the name of the environment
+you are currently operating in. How you decide that is up to you...
+
+Optionally the `Envy` instance gets passed as an argument there, exposing some
+utility functions.
+
+Once you're setup, simply request the values you need:
+
+```php
+<?php
+
+// $env configuration as described above...
+
+include $env->root_path.'/some-file.php';
+```
+
+You can also set values after creation, e.g. the current language:
+
+```php
+<?php
+
+// Assuming $user is a logged in user...
+$env->language = $user->language;
+```
+
+Note that this can also be done depending on the environment you determined in
+the constructor callable:
+
+```php
+<?php
+
+use Envy\Envy;
+
+$env = new Envy('/path/to/config', function ($env) {
+    if (check_for_cli()) {
+        $env->someParameter = 'some value';
+        return 'cli';
+    } else {
+        $env->someParameter = 'something else';
+        return 'web';
+    }
+});
+
+The callable used on construction may return multiple environments in an array.
+The found settings are then merged together (with the last defined taking
+precedence). This is extremely useful for keeping your config DRY and grouping
+settings depending on environment, e.g.:
+
+```json
+{
+    "web": {
+        "serverName": "example.com"
+    },
+    "cli": {
+        "serverName": "localhost"
+    },
+    "production": {
+        "root-path": "/var/www"
+    },
+    "development": {
+        "root-path": "/home/monomelodies/my-project"
+    }
+}
+```
+
+If the constructor callable returns `['web', 'production']` the Envy object will
+have the properties `serverName` and `root_path` set properly.
+
+## As a singleton
+Global objects are evil, and some people don't use dependency injection. That's
+why Envy can also be called like a singleton:
+
+```php
+<?php
+
+use Envy\Envy;
+
+Envy::setConfig('/path/to/config');
+Envy::setEnvironment(function ($env) {
+    // ...
+});
+$env = Envy::instance();
+```
+
+This is equivalent to the examples above.
 
