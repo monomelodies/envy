@@ -9,5 +9,13 @@
             "email": "marijn@monomelodies.nl"
         }
     ],
-    "require": {}
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Envy\\": "src/"
+        }
+    }
 }
