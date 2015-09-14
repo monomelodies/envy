@@ -2,6 +2,8 @@
 
 namespace Envy;
 
+use Symfony\Component\Yaml\Yaml;
+
 class Envy
 {
     private $configLoaded = false;
@@ -56,10 +58,34 @@ class Envy
                 $this->settings += $settings;
                 break;
             case 'yml':
+                try {
+                    $settings = Yaml::parse(file_get_contents($config));
+                } catch (\Exception $e) {
+                    throw new Config\InvalidException;
+                }
+                $this->settings += $settings;
                 break;
             case 'ini':
+                $settings = parse_ini_file($config, true);
+                if ($settings === false) {
+                    throw new Config\InvalidException;
+                }
+                $this->settings += $settings;
                 break;
             case 'xml':
+                $xml = simplexml_load_file($config);
+                if ($xml === false) {
+                    throw new Config\InvalidException;
+                }
+                $settings = [];
+                foreach ($xml as $env) {
+                    $name = $env->getName();
+                    $settings[$name] = [];
+                    foreach ($env as $prp) {
+                        $settings[$name][$prp->getName()] = $prp->__toString();
+                    }
+                }
+                $this->settings += $settings;
                 break;
             case 'php':
                 $settings = include $config;
