@@ -58,6 +58,7 @@ class Envy
                 $this->settings += $settings;
                 break;
             case 'yml':
+            case 'yaml':
                 try {
                     $settings = Yaml::parse(file_get_contents($config));
                 } catch (\Exception $e) {
