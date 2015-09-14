@@ -1,0 +1,13 @@
+{
+    "name": "monomelodies/envy",
+    "description": "Flexible environment handler for PHP projects (including unit tests!)",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marijn Ophorst",
+            "email": "marijn@monomelodies.nl"
+        }
+    ],
+    "require": {}
+}
