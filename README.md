@@ -167,3 +167,26 @@ $env = Envy::instance();
 
 This is equivalent to the examples above.
 
+## Placeholders
+Envy supports simple placeholders in environment variables:
+
+```json
+{
+    "test": {
+        "somevar": "my name is <% user %>"
+    }
+}
+```
+
+```php
+<?php
+
+$env = new Envy('/path/to/config', function ($env) {
+    $env->user = get_current_user();
+});
+
+```
+
+These replacements must be defined at the root level of your environment
+configuration to work.
+
