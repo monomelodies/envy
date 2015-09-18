@@ -126,6 +126,7 @@ class Envy
                 $this->globals += $this->settings[$env];
             }
             $this->rebuild = false;
+            $this->placeholders($this->globals);
         }
         if (isset($this->globals[$name])) {
             return $this->globals[$name];
@@ -145,6 +146,34 @@ class Envy
     public function __isset($name)
     {
         return !is_null($this->__get($name));
+    }
+
+    private function placeholders(&$array)
+    {
+        $placeholders = true;
+        while ($placeholders) {
+            $placeholders = false;
+            foreach ($array as $key => &$value) {
+                if (!is_string($value)) {
+                    if ($this->placeholders($value)) {
+                        $placeholders = true;
+                    }
+                } elseif (preg_match('@<%\s*\w+\s*%>@', $value)) {
+                    $placeholders = true;
+                    $value = preg_replace_callback(
+                        '@<%\s*(\w+)\s*%>@',
+                        function ($match) {
+                            if (isset($this->globals[$match[1]])) {
+                                return $this->globals[$match[1]];
+                            }
+                            return $match[0];
+                        },
+                        $value
+                    );
+                }
+            }
+        }
+        return $placeholders;
     }
 }
 
