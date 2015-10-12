@@ -127,6 +127,11 @@ class Envy
             }
             $this->rebuild = false;
             $this->placeholders($this->globals);
+            foreach ($this->globals as $key => &$value) {
+                if (is_string($value) && $value{0} == '&') {
+                    $value = $this->settings[substr($value, 1)][$key];
+                }
+            }
         }
         if (isset($this->globals[$name])) {
             return $this->globals[$name];
@@ -166,7 +171,7 @@ class Envy
                             if (isset($this->globals[$match[1]])) {
                                 return $this->globals[$match[1]];
                             }
-                            return '!'.strtoupper($match[1]).'!';
+                            return $match[0];
                         },
                         $value
                     );
