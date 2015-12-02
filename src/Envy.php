@@ -2,7 +2,7 @@
 
 namespace Envy;
 
-use Symfony\Component\Yaml\Yaml;
+use Kingconf\Config;
 
 class Envy
 {
@@ -45,59 +45,7 @@ class Envy
     private function loadConfig($config)
     {
         $this->rebuild = true;
-        if (!file_exists($config)) {
-            throw new Config\NotfoundException;
-        }
-        $ext = substr($config, strrpos($config, '.') + 1);
-        switch ($ext) {
-            case 'json':
-                $settings = json_decode(file_get_contents($config), true);
-                if (is_null($settings)) {
-                    throw new Config\InvalidException;
-                }
-                $this->settings += $settings;
-                break;
-            case 'yml':
-            case 'yaml':
-                try {
-                    $settings = Yaml::parse(file_get_contents($config));
-                } catch (\Exception $e) {
-                    throw new Config\InvalidException;
-                }
-                $this->settings += $settings;
-                break;
-            case 'ini':
-                $settings = parse_ini_file($config, true);
-                if ($settings === false) {
-                    throw new Config\InvalidException;
-                }
-                $this->settings += $settings;
-                break;
-            case 'xml':
-                $xml = simplexml_load_file($config);
-                if ($xml === false) {
-                    throw new Config\InvalidException;
-                }
-                $settings = [];
-                foreach ($xml as $env) {
-                    $name = $env->getName();
-                    $settings[$name] = [];
-                    foreach ($env as $prp) {
-                        $settings[$name][$prp->getName()] = $prp->__toString();
-                    }
-                }
-                $this->settings += $settings;
-                break;
-            case 'php':
-                $settings = include $config;
-                if (!is_array($settings)) {
-                    throw new Config\InvalidException;
-                }
-                $this->settings += $settings;
-                break;
-            default:
-                throw new Config\UnknownFormatException;
-        }
+        $this->settings += (array)(new Config($config));
         $this->configLoaded = true;
     }
 
@@ -105,7 +53,8 @@ class Envy
     {
         $this->rebuild = true;
         if (!$this->configLoaded) {
-            throw new Config\MissingException;
+            throw new ConfigMissingException("A config must be loaded before "
+                ."we can load the environment.");
         }
         $env = $callable($this);
         if (is_string($env)) {
