@@ -1,5 +1,8 @@
 <?php
 
+namespace Envy\Tests;
+
+use PHPUnit_Framework_TestCase;
 use Envy\Envy;
 
 class EnvyTest extends PHPUnit_Framework_TestCase
