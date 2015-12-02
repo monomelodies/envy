@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "symfony/yaml": "^2.7"
+        "monomelodies/kingconf": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8"
@@ -18,6 +18,12 @@
     "autoload": {
         "psr-4": {
             "Envy\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Envy\\": "src/",
+            "Envy\\Tests": "tests/"
         }
     }
 }
