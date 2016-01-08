@@ -105,6 +105,7 @@ class Envy
     private function placeholders(&$array)
     {
         $placeholders = true;
+        $checks = 0;
         while ($placeholders) {
             $placeholders = false;
             foreach ($array as $key => &$value) {
@@ -127,7 +128,7 @@ class Envy
                 }
             }
         }
-        return $placeholders;
+        return ++$checks > 10 ? false : $placeholders;
     }
 }
 
