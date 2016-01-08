@@ -108,7 +108,7 @@ class Envy
         while ($placeholders) {
             $placeholders = false;
             foreach ($array as $key => &$value) {
-                if (!is_string($value)) {
+                if (!is_scalar($value)) {
                     if ($this->placeholders($value)) {
                         $placeholders = true;
                     }
