@@ -1,0 +1,8 @@
+site_name: Envy documentation
+site_url: http://envy.monomelodies.nl/docs/
+repo_url: https://github.com/monomelodies/envy
+
+pages:
+- Home:
+    - 'Quickstart': 'index.md'
+
