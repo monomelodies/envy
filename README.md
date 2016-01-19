@@ -123,6 +123,7 @@ $env = new Envy('/path/to/config', function ($env) {
         return 'web';
     }
 });
+```
 
 The callable used on construction may return multiple environments in an array.
 The found settings are then merged together (with the last defined taking
