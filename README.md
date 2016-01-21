@@ -191,3 +191,12 @@ $env = new Envy('/path/to/config', function ($env) {
 These replacements must be defined at the root level of your environment
 configuration to work.
 
+## Environment-conditional variables
+You can specify variables that are only valid for combinations of environments,
+e.g. `dev+programmer_bob` versus `dev+programmer-alice`. Just use the plus sign
+in the `environment` key. These combined keys take precendence of single keys.
+
+> For XML-based config files (where `+` would be an illegal character), use the
+> `-AND-` (in caps, this is important!) delimiter instead, e.g.
+> `<dev-AND-programmer-bob>...</dev-AND-programmer-bob>`.
+
