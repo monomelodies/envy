@@ -45,7 +45,16 @@ class Envy
     private function loadConfig($config)
     {
         $this->rebuild = true;
-        $this->settings += (array)(new Config($config));
+        if (strtolower(substr($config, -4)) == '.xml') {
+            $work = [];
+            foreach ((array)(new Config($config)) as $key => $values) {
+                $key = str_replace('-AND-', '+', $key);
+                $work[$key] = $values;
+            }
+        } else {
+            $work = (array)(new Config($config));
+        }
+        $this->settings += $work;
         $this->configLoaded = true;
     }
 
@@ -71,8 +80,25 @@ class Envy
     public function __get($name)
     {
         if ($this->rebuild) {
-            foreach ($this->current as $env) {
-                $this->globals += $this->settings[$env];
+            foreach ($this->settings as $key => $value) {
+                if (strpos($key, '+')) {
+                    $envs = explode('+', $key);
+                    $matchall = true;
+                    foreach ($envs as $env) {
+                        if (!$this->usingEnvironment($env)) {
+                            $matchall = false;
+                            break;
+                        }
+                    }
+                    if ($matchall) {
+                        $this->globals += $value;
+                    }
+                }
+            }
+            foreach ($this->settings as $key => $value) {
+                if ($this->usingEnvironment($key)) {
+                    $this->globals += $value;
+                }
             }
             $this->rebuild = false;
             $this->placeholders($this->globals);
