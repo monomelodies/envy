@@ -10,7 +10,7 @@ class EnvyTest extends PHPUnit_Framework_TestCase
     private function config($env)
     {
         return function () use ($env) {
-            return $env;
+            return [$env, 'compound'];
         };
     }
 
@@ -20,6 +20,7 @@ class EnvyTest extends PHPUnit_Framework_TestCase
         foreach (['test' => 'bar', 'prod' => 'baz'] as $env => $check) {
             $envy = new Envy($config, $this->config($env));
             $this->assertEquals($check, $envy->foo);
+            $this->assertEquals(1, $envy->bar);
         }
     }
 
