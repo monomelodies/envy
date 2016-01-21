@@ -1,8 +1,13 @@
 {
     "test": {
-        "foo": "bar"
+        "foo": "bar",
+        "bar": 1
     },
     "prod": {
-        "foo": "baz"
+        "foo": "baz",
+        "bar": 2
+    },
+    "compound+prod": {
+        "bar": 1
     }
 }

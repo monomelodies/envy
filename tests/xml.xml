@@ -2,8 +2,13 @@
 <envy>
     <test>
         <foo>bar</foo>
+        <bar>1</bar>
     </test>
     <prod>
         <foo>baz</foo>
+        <bar>2</bar>
     </prod>
+    <prod-AND-compound>
+        <bar>1</bar>
+    </prod-AND-compound>
 </envy>
