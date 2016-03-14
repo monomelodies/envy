@@ -147,7 +147,7 @@ class Envy
                             if (isset($this->globals[$match[1]])) {
                                 return $this->globals[$match[1]];
                             }
-                            return $match[0];
+                            return strtoupper($match[1]);
                         },
                         $value
                     );
